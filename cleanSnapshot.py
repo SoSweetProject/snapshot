@@ -81,8 +81,10 @@ for i,file in enumerate(tweepyFiles) :
         # Le tri s'effectue en fonction de la langue du tweet detectée par Twitter (on ne conserve que les tweets en français), ainsi qu'en fonction des clients Twitter (afin d'éviter de conserver les tweets automatiques)
         for gnuDatasiftLine in gnuDatasiftFile :
             gnuDatasiftTweet = ujson.loads(gnuDatasiftLine)
-            if (gnuDatasiftTweet["client"] in goodClients and gnuDatasiftTweet["language"]["twitter"]=="fr") :
-                mergedTweets[gnuDatasiftTweet["id"]]=gnuDatasiftTweet
+            # Par précaution on vérifie que le champ twitter est bien dans "language" car certains tweets ne l'ont pas (en 2016-08-09, 2016-08-10 et  dans quelques fichiers de 2016-05), mais cela ne concerne que de très rares cas
+            if "twitter" in gnuDatasiftTweet["language"] :
+                if (gnuDatasiftTweet["client"] in goodClients and gnuDatasiftTweet["language"]["twitter"]=="fr") :
+                    mergedTweets[gnuDatasiftTweet["id"]]=gnuDatasiftTweet
 
         gnuDatasiftFile.close()
 
