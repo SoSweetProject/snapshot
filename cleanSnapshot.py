@@ -26,21 +26,8 @@ def parseArgs():
     return args
 
 def getFilesToTreat(path, from_date, to_date):
-    logger.info("looking for uncompressed files to treat")
-    #first, uncompressed files
-    uncompressedFiles = [f for f in glob.glob(path + '*.data') if (f.split('/')[-1].split('T')[0] <= to_date and f.split('/')[-1].split('T')[0] >= from_date)]
-    uncompressedFiles.sort()
-    #then compressed files
-    logger.info("looking for compressed files to treat")
-    compressedFiles=[]
-    for fileName in [f for f in glob.glob(path + '*.tgz') if (f.split('/')[-1].split('.')[0] >= from_date and f.split('/')[-1].split('.')[0] <= to_date)]:
-        logger.info("checking:%s"%fileName)
-        tf=tarfile.open(fileName)
-        filesOK=[(n,tf) for n in tf.getnames() if n.split('/')[-1].split('T')[0] >= from_date and n.split('/')[-1].split('T')[0] <= to_date and n.split('.')[-1] == "data" and n.split('.')[-2] != "retweets"]
-        logger.debug("\n".join([f[0] for f in filesOK]))
-        compressedFiles+=filesOK
-    compressedFiles.sort()
-    files=compressedFiles+uncompressedFiles
+    files = [f for f in glob.glob(path + '*.data') if (f.split('/')[-1].split('T')[0] <= to_date and f.split('/')[-1].split('T')[0] >= from_date)]
+    files.sort()
     logger.info("%d files to treat"%len(files))
     return files
 
